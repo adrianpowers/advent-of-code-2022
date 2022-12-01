@@ -16,6 +16,9 @@ function calories(text) {
   totals.sort((a, b) => {
     return b - a;
   })
+  // part 1 solution
+  console.log(totals[0])
+  // part 2 solution
   console.log(totals[0]+totals[1]+totals[2])
 }
 
