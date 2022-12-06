@@ -1,7 +1,7 @@
 let fs = require("fs");
 
 function fullyContains(text) {
-  const lines = text.split("\r\n");
+  const lines = text.split("\n").map(str => str.trim());
   const splitLines = lines.map(line => line.split(","))
   let total = 0;
   splitLines.forEach(range => {
