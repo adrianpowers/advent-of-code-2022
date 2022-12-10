@@ -68,8 +68,7 @@ function treehouse(text){
   }
 
   linesArray.forEach(line => {
-    // HORIZONTAL
-
+    // FROM LEFT, but also edge logic
     for(let i = 0; i < line.length; i++){
       const xCoord = i;
       const yCoord = linesArray.indexOf(line);
@@ -101,6 +100,7 @@ function treehouse(text){
       }
     }
 
+    // FROM RIGHT
     for(let i = 0; i < line.length; i++){
       const xCoord = i;
       const yCoord = linesArray.indexOf(line);
@@ -111,41 +111,49 @@ function treehouse(text){
         setVisible(xCoord, yCoord, "VISIBLE FROM RIGHT");
       }
     }
-
-    
-
-    // from right side
-    // for(let i = line.length-2; i > 0; i--){
-    //   const xCoord = i;
-    //   const yCoord = linesArray.indexOf(line);
-
-    //   // handles right and bottom edges being visible
-    //   if(xCoord === line.length-1 || yCoord === linesArray.length-1){
-    //     setVisible(xCoord, yCoord, "EDGE");
-    //   }
-
-    //   if(line[i] > line[i+1]){
-    //     setVisible(xCoord, yCoord, "R");
-    //   };
-    // }
-
-    // from top edge
-    // for(let i = 1; i < line.length; i++){
-    //   for(let j = 1; j < linesArray.length-1; j++){
-    //     const xCoord = i;
-    //     const yCoord = j;
-  
-    //     // coordinates are x, y, but we check with y, x; simulates columns
-    //     // console.log(`${linesArray[j][i]} - coords: ${xCoord}, ${yCoord}`)
-    //     if(linesArray[j][i] > linesArray[j-1][i]){
-    //       console.log(`${linesArray[j][i]} - coords: ${xCoord}, ${yCoord}`)
-    //     }
-    //   }
-    // }
   })
   
+  let columns = [];
+
+  for(let i = 0; i < linesArray[0].length; i++){
+    const currentTrees = linesArray.map(line => line[i]); 
+    columns.push(currentTrees)
+  }
+
+  columns.forEach(col => {
+    // FROM TOP
+    for(let i = 0; i < col.length; i++){
+      const xCoord = i;
+      const yCoord = columns.indexOf(col);
+      const currentTrees = col.slice(0, xCoord+1);
+      let tallest = Math.max(...currentTrees);
+
+      if(currentTrees[i-1]){
+        if(currentTrees[i] > currentTrees[i-1] && currentTrees[i] >= tallest){
+          if(i === col.indexOf(currentTrees[i])){
+            setVisible(yCoord, xCoord, "VISIBLE FROM TOP");
+          }
+        }
+      }
+    }
+
+    // FROM BOTTOM
+    for(let i = 0; i < col.length; i++){
+      const xCoord = i;
+      const yCoord = columns.indexOf(col);
+      const currentTrees = col.slice(-i-1);
+      let tallest = Math.max(...currentTrees);
+
+      if(currentTrees[0] > currentTrees[1] && currentTrees[0] >= tallest){
+        setVisible(yCoord, xCoord, "VISIBLE FROM BOTTOM");
+      }
+    }
+  })
+
   return (Object.keys(visible).length)
 }
+
+// 3165 is too high
 
 console.log(
   treehouse(fs.readFileSync("./day8input.txt", { encoding: "utf-8" }))
